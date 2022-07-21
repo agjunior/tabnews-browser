@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "TabNews Browser",
+  "description": "Extensão não oficial do TabNews para navegadores;",
+  "version": "0.1.0",
+  "author": "Agnaldo Carvalho",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://tabnews.com.br/*",
+    "https://www.tabnews.com.br/*"
+  ],
+  "permissions": [
+    "alarms",
+    "notifications",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/logo16.png",
+      "32": "images/logo32.png",
+      "48": "images/logo48.png",
+      "128": "images/logo128.png"
+    }
+  },
+  "icons": {
+    "16": "images/logo16.png",
+    "32": "images/logo32.png",
+    "48": "images/logo48.png",
+    "128": "images/logo128.png"
+  }
+}
