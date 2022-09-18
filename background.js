@@ -1,4 +1,4 @@
-const tabnewsUrl = "https://tabnews-a1kfcsd7i-tabnews.vercel.app"
+const tabnewsUrl = "https://www.tabnews.com.br"
 const apiUrl = `${tabnewsUrl}/api/v1`
 
 const setLocal = async (key, value) => await chrome.storage.local.set({[key]: value})
