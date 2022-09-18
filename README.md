@@ -14,10 +14,8 @@ Extensão não oficial do TabNews para navegadores
 - Por enquanto a única ordenação disponível é pelas mais recentes
 - A lista de publicações é limitada apenas a primeira página (30 mais recentes)
 - Somente novas publicações são notificadas (não inclui comentários)
-- Não tem uma tela de configuração ainda, mas é possível alterar o intervalo e configurar as notificações
 - Por não estar na loja, será necessário baixar o código e usar o modo de desenvolvedor
-- Testado apenas no Chromemas pode funcionar em outros navegadores com a mesma base
-
+- Testado apenas no Chrome mas deve funcionar em todos os navegadores que usam como base o Chromium(Opera, Brave, Vivaldi, Edge, etc...)
 
 ### Como usar
 
@@ -25,11 +23,7 @@ Acessar página de extensões e habilitar o **Modo do desenvolvedor** no canto d
 
 ### Configuração
 
-Ainda não existe uma página de configuração, mas há 3 constantes no arquivo **background.js** que é possível alterar:
-
-**UPDATE_INTERVAL_IN_MINUTES** é o tempo em minutos que e extensão vai verificar por novos posts (o padrão é 5)
-**NOTIFICATIONS_ENABLED** habilita ou não as notificações no desktop (o badge do ícone sempre mostra novos posts)
-**NOTIFICATIONS_GROUP_ENABLED** mostra a quantidade em vez do conteúdo da última notificação se acumular mais de uma publicação não lida
+Para acessar a configuração, clique no icone da extensão e clique na engrenagem.
 
 ### Screenshots
 
