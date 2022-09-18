@@ -1,0 +1,312 @@
+body {
+    width: 100%;
+    margin: 0;
+    background-color: rgb(196, 196, 196);
+    overflow: hidden;
+  }
+  
+  .header {
+    background: rgb(36, 41, 47);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+  }
+  
+  .header-left {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 16px;
+  }
+  
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .header-update {
+    color: #9f9f9f;
+    font-size: 12px;
+    font-style: italic;
+  }
+  
+  .header-icon {
+    padding: 5px;
+    display: flex;
+  }
+  
+  .header-icon:hover {
+    cursor: pointer;
+    background: #0000005c;
+    border-radius: 3px;
+    transition: background-color .3s;
+  }
+  
+  .rotate {
+    animation: rotating 2s linear infinite;
+  }
+
+  .top {
+    animation: popup 3s linear;
+  }
+  
+  .item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 14px;
+    text-decoration: none;
+    color: rgb(36, 41, 47);
+    padding: 6px 12px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color .3s;
+  }
+  
+  .item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .item-order {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .content {
+    overflow: auto;
+  }
+  
+  .content-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .content-info {
+    font-size: 12px;
+    color: rgb(110, 119, 129);
+    display: flex;
+    gap: 4px;
+  }
+
+  .content > #title{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .content > #configs{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .content > #configs > div{
+    width: 510px;
+    background-color: white;
+    border-radius: 25px;
+    height: 188px;
+    padding-left: 20px;
+  }
+
+  #configs > div > .config-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .config-item > .config{
+    margin-top: 5px;
+    margin-left: 20px;
+  }
+
+  /* https://pt.stackoverflow.com/questions/336061/estilizar-um-input-type-number-para-trocar-as-setas */
+  input[type=number]::-webkit-inner-spin-button { 
+    all: unset; 
+    min-width: 21px;
+    min-height: 45px;
+    margin: 17px;
+    padding: 0px;
+    background-image: 
+    linear-gradient(to top, transparent 0px, transparent 16px, #fff 16px, #fff 26px, transparent 26px, transparent 35px, #000 35px,#000 36px,transparent 36px, transparent 40px),
+    linear-gradient(to right, transparent 0px, transparent 10px, #000 10px, #000 11px, transparent 11px, transparent 21px);
+    transform: rotate(90deg) scale(0.8, 0.9);
+    cursor:pointer;
+  }
+  input[type=number]{
+    width: 106px;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+#save {
+  background-color: #13aa52;
+  border: 1px solid #13aa52;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  outline: none;
+  outline: 0;
+  padding: 10px 25px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 164px;
+}
+
+#save:hover {
+  box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+  transform: translateY(-2px);
+}
+
+#save:active{
+    margin-top: 3px;
+}
+
+#save-image{
+    width: 26px;
+    margin-top: -4px;
+    margin-left: 27px;
+    position: absolute;
+    filter: invert(0.92)
+}
+
+#div-save {
+    margin-top: 5px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+footer{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    bottom: -100px;
+}
+
+.alert {
+    padding: 20px;
+    background-color: #04AA6D;
+    color: white;
+    width: 279px;
+    border-radius: 17px;
+    font-size: 19px;
+    justify-content: center;
+    display: flex;
+  }
+
+.popup{
+    animation: popup 2.5s linear;
+}
+
+@media (min-width: 768px) {
+  #save {
+    padding: 10px 30px;
+  }
+}
+
+@keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  
+@keyframes popup {
+    from {
+        opacity: 0;
+        bottom: -100px;
+    }
+    20% {
+        opacity: 1;
+        bottom: 35px;
+    }
+    30% {
+        opacity: 1;
+        bottom: 20px;
+    }
+    to {
+      opacity: 0;
+      bottom: 20px;
+    }
+}

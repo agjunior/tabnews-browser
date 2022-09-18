@@ -1,18 +1,53 @@
-const SITE_URL = 'https://www.tabnews.com.br/'
+class Item {
+  constructor(content, tabnewsUrl){
+    this.published_at = new Date(content.published_at).getTime()
+    this.owner_username = content.owner_username
+    this.slug = content.slug
+    this.title = content.title
+    this.tabcoins = content.tabcoins
+    this.children_deep_count = content.children_deep_count
+    this.site_url = tabnewsUrl
+  }
 
-function writeHtml() {
-  chrome.storage.local.get(store => {
+  toHtml(){
+    const {owner_username, slug, title, tabcoins, children_deep_count, site_url, published_at} = this;
+    const url = `${site_url}/${owner_username}/${slug}`
+    const time = relativeTime(Date.now(), published_at) //new Date(item.published_at).getTime()
 
-    if (!store.content) return
+    return `
+      <a href="${url}" class="item" target="_blank">
+      <div class="item-content">
+        <div class="content-title">${title}</div>
+        <div class="content-info">
+          <span class="content-tabcoins">${tabcoins} TabCoins</span>
+          <span>&#8231;</span>
+          <span class="content-comments">${children_deep_count} coment&#225;rios</span>
+          <span>&#8231;</span>
+          <span class="content-date">${time}</span>
+          <span>&#8231;</span>
+          <span class="content-user">${owner_username}</span>
+        </div>
+      </div>
+    </a>
+    `
+  }
+}
 
-    let html = ''  
-    store.content.forEach(element => {
-      html += itemHtml(element)
+function setContents() {
+  chrome.storage.local.get(storage => {
+    if(!storage.content) return
+    if(!storage.tabnewsUrl) return setTimeout(setContents, 1500)
+
+    let contentsHtml = ""
+
+    storage.content.forEach(content => {
+      contentsHtml += new Item(content, storage.tabnewsUrl).toHtml()
     });  
-    document.querySelector('.content').innerHTML = html
 
-    if (store.last_update) {
-      const time = relativeTime(Date.now(), store.last_update)
+    document.querySelector('.content').innerHTML = contentsHtml
+    
+    if(storage.last_update){
+      const time = relativeTime(Date.now(), storage.last_update)
       document.querySelector('.header-update').innerHTML = `atualizado ${time}`
     }
 
@@ -20,37 +55,25 @@ function writeHtml() {
   })
 }
 
-const updateButton = document.querySelector('.header-icon')
-updateButton.addEventListener("click", handleUpdate)
 
-function handleUpdate() {
-  const updateImage = document.querySelector('.reload')
-  updateImage.classList.add('rotate')
+const updateButton = document.querySelector('.reload')
+
+async function handleUpdate() {
+  updateButton.classList = "reload rotate"
+  
+  await new Promise(r => setTimeout(r, 1000)) //Delay fake porque fica mais bonito.
   chrome.runtime.sendMessage({message: "updateContent"}, () => {
-    writeHtml()
-    updateImage.classList.remove('rotate')
+    setContents()
+    updateButton.classList = "reload"
   });
 }
 
-function itemHtml(item) {
-  const dateEpoch = new Date(item.published_at).getTime()
-  const time = relativeTime(Date.now(), dateEpoch)
-  return `
-    <a href="${SITE_URL}/${item.username}/${item.slug}" class="item" target="_blank">
-    <div class="item-content">
-      <div class="content-title">${item.title}</div>
-      <div class="content-info">
-        <span class="content-tabcoins">${item.tabcoins} TabCoins</span>
-        <span>&#8231;</span>
-        <span class="content-comments">${item.children_deep_count} coment&#225;rios</span>
-        <span>&#8231;</span>
-        <span class="content-date">${time}</span>
-        <span>&#8231;</span>
-        <span class="content-user">${item.username}</span>
-      </div>
-    </div>
-  </a>
-  `
+function handleConfig(){
+  window.open(location.origin + "/config.html")
 }
 
-writeHtml()
+setContents()
+
+updateButton.addEventListener("click", handleUpdate)
+const configButton = document.querySelector(".config")
+configButton.addEventListener("click", handleConfig)

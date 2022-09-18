@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="config.css">
+    <meta charset="utf8" />
+    <title>Configuração do TabNews Browser</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-left">
+        <img src="images/logo.png" class="logo">
+        <div>TabNews Browser</div>
+      </div>
+      <div class="header-right">
+        <div class="header-update"></div>
+      </div>
+    </div>
+    <div class="content">
+        <div id="title"> <h1>Configuração do TabNews Browser</h1> </div>
+        <div id="configs"><div>
+
+            <div class="config-item">
+                <h1>Minutos a cada update</h1>
+                <div class="config">
+                    <input type="number" id="minutes-to-check" min="1" max="30"></input>
+                </div>
+            </div>
+            <div class="config-item">
+                <h1>Notificações:</h1>
+                <div class="config">
+                    <label class="switch">
+                        <input type="checkbox" id="notifications-input">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="div-save">
+                <button id="save">Salvar<img id="save-image" src="images/config.png"/></button>
+            </div>
+        </div></div>
+    </div>
+    <footer>
+        <div class="alert">
+            <strong>Configurações salvas!</strong> 
+          </div>
+    </footer>
+    <script src="utils.js"></script>
+    <script src="config.js"></script>
+  </body>
+</html>
