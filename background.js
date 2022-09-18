@@ -1,26 +1,31 @@
-const API_URL = 'https://www.tabnews.com.br/api/v1/'
-const UPDATE_INTERVAL_IN_MINUTES = 5
-const NOTIFICATIONS_ENABLED = 1
-const NOTIFICATIONS_GROUP_ENABLED = 1
+const tabnewsUrl = "https://tabnews-a1kfcsd7i-tabnews.vercel.app"
+const apiUrl = `${tabnewsUrl}/api/v1`
 
-chrome.runtime.onStartup.addListener(setInitialSettings)
-chrome.runtime.onMessage.addListener(handleMessage)
+const setLocal = async (key, value) => await chrome.storage.local.set({[key]: value})
+const getLocal = async (key) => (await chrome.storage.local.get([key]))[key]
 
-chrome.action.setBadgeBackgroundColor({ color: '#24292f' });
-
-chrome.alarms.create('checkNewArticle', {
-  periodInMinutes: UPDATE_INTERVAL_IN_MINUTES,
-  delayInMinutes: 0
-});
-chrome.alarms.onAlarm.addListener(handleAlarm);
-
-async function setLocal(key, value) {
-  return await chrome.storage.local.set({[key]: value})
+let configInCache = {updateIntervalInMinutes: 5, notificationsEnabled: true, notificationsGroupEnabled: true}
+const setConfig = async (options) => {
+  if(options.updateIntervalInMinutes) {
+    setLocal("config.updateIntervalInMinutes", options.updateIntervalInMinutes)
+    chrome.alarms.clear("checkNewArticle")
+    chrome.alarms.create('checkNewArticle', {
+      periodInMinutes: config.updateIntervalInMinutes,
+      delayInMinutes: 0
+    });
+  }
+  if(options.notificationsEnabled) setLocal("notificationsEnabled", options.notificationsEnabled)
+  if(options.notificationsGroupEnabled) setLocal("notificationsGroupEnabled", options.notificationsGroupEnabled)
+  getConfig()
 }
+const getConfig = async () => {
+  const config = {};
+  config.updateIntervalInMinutes = await getLocal("updateIntervalInMinutes") || 5
+  config.notificationsEnabled = await getLocal("notificationsEnabled") || true
+  config.notificationsGroupEnabled = await getLocal("notificationsGroupEnabled") || true
 
-async function getLocal(key) {
-  let obj = await chrome.storage.local.get([key])
-  return obj[key]
+  configInCache = config;
+  return config;
 }
 
 function setInitialSettings() {
@@ -28,33 +33,41 @@ function setInitialSettings() {
     content: null,
     last_content_viewed: null,
     count_pending: 0,
-    last_update: null
+    last_update: null,
+    tabnewsUrl: tabnewsUrl,
+    updateIntervalInMinutes: 5,
+    notificationsEnabled: true,
+    notificationsGroupEnabled: true
   })
 }
 
+const alarms = {
+  checkNewArticle: requestNewArticles
+}
+
 function handleAlarm(alarm) {
-  if (alarm.name === 'checkNewArticle')
-  requestNewArticles()
+  let alarmFunction = alarms[alarm.name]
+  if(typeof alarmFunction == "function") alarmFunction()
+}
+
+const messages = {
+  updateContent: requestNewArticles,
+  clear: clear,
+  setConfig: setConfig
 }
 
 function handleMessage(request, sender, sendResponse) {
-  if (request.message === 'updateContent') {
-    requestNewArticles()
-  }
-  if (request.message === 'clear') {
-    clear()
-  }
+  let messageFunction = messages[request.message]
+  if(typeof messageFunction == "function") messageFunction()
+
   sendResponse();
 }
 
 function requestNewArticles() {
-  fetch(API_URL + 'contents?strategy=new')
-    .then(response => response.json())
-    .then(json => {
-      setLocal('content', json)
-      checkForNewArticles()
-    })
-    .catch(err => console.log('Error', err))
+  fetch(`${apiUrl}/contents?strategy=new`).then(response => response.json()).then(json => {
+    setLocal('content', json)
+    checkForNewArticles()
+  }).catch(err => console.log('Error', err))
 }
 
 function updateBadge(number) {
@@ -67,16 +80,15 @@ function updateBadge(number) {
 async function clear() {
   chrome.action.setBadgeText({ text: '' });
   const content = await getLocal('content')
+  if(!content[0]) return;
+
   setLocal('last_content_viewed', content[0].id)
   setLocal('count_pending', 0)
 }
 
 function showNotification(title, message, context = null , notificationId) {
-
-  if (!NOTIFICATIONS_ENABLED) return
-
-  /* Notificações com o mesmo ID só são disparadas uma única vez */
-  chrome.notifications.create(/* notificationId, */{
+  if (!configInCache.notificationsEnabled) return
+  chrome.notifications.create({
     type: 'basic',
     iconUrl: 'images/logo128.png',
     contextMessage: context,
@@ -97,7 +109,6 @@ function calcNewArticles(content, lastContentViewed) {
 }
 
 async function checkForNewArticles() {  
-
   const content = await getLocal('content')
   const lastUpdate = await getLocal('last_update')
   const countPending = await getLocal('count_pending')
@@ -118,8 +129,19 @@ async function checkForNewArticles() {
 
   if (pendingDiff <= 0) return
 
-  if(countNewArticles == 1 || !NOTIFICATIONS_GROUP_ENABLED && pendingDiff == 1)
-    showNotification('Nova publicação', mostRecentItem.title, mostRecentItem.username)
-  else if (countNewArticles > 1)
-    showNotification('Novas publicações', `${countNewArticles} novas publicações não lidas`)
+  if(countNewArticles == 1 || !configInCache.notificationsGroupEnabled && pendingDiff == 1) showNotification('Nova publicação', mostRecentItem.title, mostRecentItem.username)
+  else if (countNewArticles > 1) showNotification('Novas publicações', `${countNewArticles} novas publicações não lidas`)
 }
+
+(async () => {
+  const config = await getConfig()
+  chrome.runtime.onMessage.addListener(handleMessage)
+  chrome.action.setBadgeBackgroundColor({ color: '#24292f' });
+  chrome.alarms.create('checkNewArticle', {
+    periodInMinutes: parseFloat(config.updateIntervalInMinutes) || 5,
+    delayInMinutes: 0
+  });
+  chrome.alarms.onAlarm.addListener(handleAlarm);
+})()
+
+setInitialSettings()

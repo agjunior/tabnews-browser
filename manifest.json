@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "TabNews Browser",
   "description": "Extensão não oficial do TabNews para navegadores;",
-  "version": "0.1.0",
-  "author": "Agnaldo Carvalho",
+  "version": "0.1.5",
+  "author": "Agnaldo Carvalho, Gustavo33",
   "background": {
     "service_worker": "background.js"
   },
